@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Safe Journey — Women's Safety App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #FFFFFF;
+      --card-bg: #F8FAFC;
+      --primary: #8B7CF6;
+      --primary-hover: #7C3AED;
+      --primary-light: #EDE9FE;
+      --secondary: #FCE7F3;
+      --text-main: #1F2937;
+      --text-secondary: #6B7280;
+      --text-muted: #9CA3AF;
+      --border: #E5E7EB;
+      --sos: #EF4444;
+      --sos-hover: #DC2626;
+      --sos-light: #FEE2E2;
+      --safe: #10B981;
+      --safe-light: #D1FAE5;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-pill: 9999px;
+      --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+      --shadow-float: 0 12px 30px -4px rgba(139, 124, 246, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: #F1F5F9;
+      background-image: radial-gradient(at 0% 0%, rgba(139, 124, 246, 0.08) 0px, transparent 50%),
+                        radial-gradient(at 100% 100%, rgba(252, 231, 243, 0.15) 0px, transparent 50%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+      color: var(--text-main);
+    }
+
+    /* Device frame wrapper */
+    .device-wrapper {
+      width: 100%;
+      max-width: 420px;
+      height: 840px;
+      background: var(--bg-main);
+      border-radius: 44px;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.12), 0 0 0 10px #FFFFFF, 0 0 0 12px var(--border);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Top dynamic notch */
+    .notch {
+      width: 110px;
+      height: 20px;
+      background: #111827;
+      border-bottom-left-radius: 14px;
+      border-bottom-right-radius: 14px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .notch-dot {
+      width: 6px;
+      height: 6px;
+      background: #374151;
+      border-radius: 50%;
+    }
+
+    /* App Header */
+    .app-header {
+      padding: 34px 20px 14px 20px;
+      background: var(--bg-main);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-text h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.15;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-text p {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .header-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .header-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Screen Container */
+    .screen-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px;
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .screen-content.active {
+      display: flex;
+    }
+
+    /* Rounded Cards */
+    .clean-card {
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+    }
+
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .card-title-row h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.2px;
+    }
+
+    /* Form Fields */
+    .field-group {
+      margin-bottom: 12px;
+    }
+
+    .field-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .field-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .btn-current-loc {
+      background: transparent;
+      border: none;
+      color: var(--primary);
+      font-size: 11.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 2px 4px;
+    }
+
+    .btn-current-loc:hover {
+      text-decoration: underline;
+    }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 12px;
+      font-size: 18px;
+      color: var(--primary);
+      pointer-events: none;
+    }
+
+    .input-icon.dest {
+      color: var(--sos);
+    }
+
+    .text-input {
+      width: 100%;
+      padding: 12px 14px 12px 38px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 13.5px;
+      color: var(--text-main);
+      background: var(--bg-main);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .text-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(139, 124, 246, 0.15);
+    }
+
+    /* Swap button */
+    .swap-btn-wrap {
+      display: flex;
+      justify-content: center;
+      margin: -4px 0 8px 0;
+    }
+
+    .btn-swap {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.15s ease;
+    }
+
+    .btn-swap:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* Suggestion Chips */
+    .suggestion-row {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-top: 6px;
+    }
+
+    .sugg-chip {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11.5px;
+      color: var(--text-main);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .sugg-chip:hover {
+      background: #EDE9FE;
+      color: var(--primary-hover);
+      border-color: var(--primary);
+    }
+
+    /* Duration Selector */
+    .duration-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 8px 0 20px 0;
+    }
+
+    .duration-btn {
+      padding: 10px 4px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+
+    .duration-btn:hover {
+      background: #EDE9FE;
+    }
+
+    .duration-btn.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(139, 124, 246, 0.3);
+    }
+
+    /* Primary Start Button */
+    .btn-primary-action {
+      width: 100%;
+      background: var(--primary);
+      color: #FFFFFF;
+      border: none;
+      padding: 14px 20px;
+      border-radius: var(--radius-md);
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: var(--shadow-float);
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary-action:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    /* Soft Red SOS Button */
+    .btn-sos {
+      width: 100%;
+      background: var(--sos);
+      color: #FFFFFF;
+      border: none;
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.25);
+      transition: all 0.15s ease;
+    }
+
+    .btn-sos:hover {
+      background: var(--sos-hover);
+    }
+
+    /* Active Journey Visuals */
+    .countdown-card {
+      text-align: center;
+      padding: 24px 20px;
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .countdown-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .countdown-value {
+      font-size: 46px;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -1px;
+      font-variant-numeric: tabular-nums;
+      margin: 4px 0;
+    }
+
+    .countdown-arrival-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    /* Timeline component */
+    .timeline-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin: 14px 0;
+    }
+
+    .timeline-node {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .node-icon-box {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .node-icon-box.src {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .node-icon-box.dest {
+      background: var(--secondary);
+      color: var(--sos);
+    }
+
+    .node-connector {
+      width: 2px;
+      height: 24px;
+      background: var(--border);
+      margin-left: 13px;
+    }
+
+    .node-info h4 {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .node-info p {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* Outline Button */
+    .btn-outline-action {
+      width: 100%;
+      background: transparent;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 12px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-outline-action:hover {
+      background: var(--card-bg);
+      border-color: var(--text-muted);
+    }
+
+    /* Contacts Screen */
+    .contact-item-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      margin-bottom: 10px;
+    }
+
+    .contact-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .contact-tag {
+      font-size: 10.5px;
+      padding: 2px 6px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-left: 6px;
+    }
+
+    /* Switch Component */
+    .switch-wrap {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 22px;
+    }
+
+    .switch-wrap input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--border);
+      border-radius: 24px;
+      transition: 0.2s;
+    }
+
+    .switch-slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .switch-slider {
+      background-color: var(--primary);
+    }
+
+    input:checked + .switch-slider:before {
+      transform: translateX(18px);
+    }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      height: 64px;
+      background: var(--bg-main);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      position: sticky;
+      bottom: 0;
+      z-index: 50;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 10.5px;
+      font-weight: 500;
+      width: 25%;
+      height: 100%;
+      transition: color 0.15s ease;
+      position: relative;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .nav-item .material-symbols-rounded {
+      font-size: 22px;
+    }
+
+    .active-badge-dot {
+      position: absolute;
+      top: 8px;
+      right: 32%;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--safe);
+    }
+
+    /* Modal dialogs */
+    .modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(31, 41, 55, 0.45);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      animation: fadeIn 0.15s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 340px;
+      padding: 24px;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      animation: slideUp 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(16px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .dialog-icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      margin: 0 auto 14px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dialog-icon-box.brand {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .dialog-icon-box.danger {
+      background: var(--sos-light);
+      color: var(--sos);
+    }
+
+    .btn-green-safe {
+      width: 100%;
+      background: var(--safe);
+      color: #FFFFFF;
+      border: none;
+      padding: 13px;
+      border-radius: var(--radius-md);
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-red-help {
+      width: 100%;
+      background: var(--sos);
+      color: #FFFFFF;
+      border: none;
+      padding: 13px;
+      border-radius: var(--radius-md);
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    /* Toast */
+    .toast-pill {
+      position: absolute;
+      bottom: 74px;
+      left: 20px;
+      right: 20px;
+      background: #1F2937;
+      color: #FFFFFF;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      font-size: 12.5px;
+      font-weight: 500;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      z-index: 300;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    .toast-pill.active {
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="device-wrapper">
+    <!-- Smartphone Notch -->
+    <div class="notch">
+      <div class="notch-dot"></div>
+    </div>
+
+    <!-- App Header -->
+    <div class="app-header">
+      <div class="brand-wrap">
+        <div class="brand-icon">
+          <span class="material-symbols-rounded" style="font-size:22px;">shield</span>
+        </div>
+        <div class="brand-text">
+          <h1 id="screenHeaderTitle">Safe Journey</h1>
+          <p id="screenHeaderSubtitle">Your safety, every journey.</p>
+        </div>
+      </div>
+      <button class="header-btn" title="Settings" onclick="switchTab(3)">
+        <span class="material-symbols-rounded" style="font-size:20px;">tune</span>
+      </button>
+    </div>
+
+    <!-- Screen 1: Home (Plan Your Journey) -->
+    <div class="screen-content active" id="tabHome">
+      <!-- Active Journey Notice if running -->
+      <div id="homeActiveNotice" style="display:none; background:var(--safe-light); border:1px solid rgba(16,185,129,0.3); border-radius:var(--radius-md); padding:10px 14px; align-items:center; justify-content:space-between;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="material-symbols-rounded" style="color:var(--safe); font-size:18px;">navigation</span>
+          <span style="font-size:12px; font-weight:600; color:#065F46;">A journey is currently in progress.</span>
+        </div>
+        <button style="background:none; border:none; color:var(--safe); font-weight:700; font-size:12px; cursor:pointer;" onclick="switchTab(1)">View</button>
+      </div>
+
+      <!-- Plan your journey Card -->
+      <div class="clean-card">
+        <div class="card-title-row">
+          <div style="width:28px; height:28px; border-radius:8px; background:var(--primary-light); color:var(--primary); display:flex; align-items:center; justify-content:center;">
+            <span class="material-symbols-rounded" style="font-size:16px;">edit_road</span>
+          </div>
+          <h2>Plan your journey</h2>
+        </div>
+
+        <!-- 1. Source Location -->
+        <div class="field-group">
+          <div class="field-header">
+            <label class="field-label">Starting from</label>
+            <button type="button" class="btn-current-loc" onclick="useCurrentLocation()">
+              <span class="material-symbols-rounded" style="font-size:13px;">my_location</span>
+              Use current location
+            </button>
+          </div>
+          <div class="input-wrap">
+            <span class="material-symbols-rounded input-icon">trip_origin</span>
+            <input type="text" id="sourceInput" class="text-input" placeholder="Enter starting location" value="Campus Library, North Gate">
+          </div>
+        </div>
+
+        <!-- Swap Button -->
+        <div class="swap-btn-wrap">
+          <button type="button" class="btn-swap" title="Swap locations" onclick="swapLocations()">
+            <span class="material-symbols-rounded" style="font-size:18px;">swap_vert</span>
+          </button>
+        </div>
+
+        <!-- 2. Destination Location -->
+        <div class="field-group">
+          <div class="field-header">
+            <label class="field-label">Going to</label>
+          </div>
+          <div class="input-wrap">
+            <span class="material-symbols-rounded input-icon dest">location_on</span>
+            <input type="text" id="destInput" class="text-input" placeholder="Enter destination" value="Greenwood Apartments, Block B">
+          </div>
+
+          <!-- Quick Suggestion Chips -->
+          <div class="suggestion-row">
+            <div class="sugg-chip" onclick="setDestination('Home')">🏡 Home</div>
+            <div class="sugg-chip" onclick="setDestination('Campus Dorm')">🏢 Campus Dorm</div>
+            <div class="sugg-chip" onclick="setDestination('Metro Station')">🚇 Metro Station</div>
+            <div class="sugg-chip" onclick="setDestination('Main Library')">📚 Main Library</div>
+          </div>
+        </div>
+
+        <!-- 3. Expected Journey Time -->
+        <div style="margin-top:14px;">
+          <label class="field-label">Expected arrival time</label>
+          <div class="duration-grid">
+            <div class="duration-btn" onclick="selectDuration(15, this)">15 min</div>
+            <div class="duration-btn active" onclick="selectDuration(20, this)">20 min</div>
+            <div class="duration-btn" onclick="selectDuration(30, this)">30 min</div>
+            <div class="duration-btn" id="btnCustomDuration" onclick="openCustomDurationDialog()">Custom</div>
+          </div>
+        </div>
+
+        <!-- 4. Start Safe Journey Button -->
+        <button type="button" class="btn-primary-action" onclick="startJourneyFromHome()">
+          <span class="material-symbols-rounded">navigation</span>
+          Start Safe Journey
+        </button>
+      </div>
+
+      <!-- Quick SOS Button -->
+      <button type="button" class="btn-sos" onclick="triggerSOSAlert(true)">
+        <span class="material-symbols-rounded">emergency</span>
+        SOS — Emergency Alert
+      </button>
+
+      <!-- Safety Disclaimer -->
+      <div style="padding:10px 14px; background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-md); display:flex; align-items:center; gap:8px;">
+        <span class="material-symbols-rounded" style="font-size:16px; color:var(--text-secondary);">info</span>
+        <p style="font-size:11.5px; color:var(--text-secondary); line-height:1.35;">
+          Trusted contacts will be notified automatically if your arrival check-in is missed.
+        </p>
+      </div>
+    </div>
+
+    <!-- Screen 2: My Journey (Active Journey) -->
+    <div class="screen-content" id="tabJourney">
+      <!-- Empty State if no active journey -->
+      <div id="journeyEmptyState" style="text-align:center; padding:60px 20px;">
+        <div style="width:68px; height:68px; border-radius:24px; background:var(--primary-light); color:var(--primary); display:flex; align-items:center; justify-content:center; margin:0 auto 16px auto;">
+          <span class="material-symbols-rounded" style="font-size:36px;">navigation</span>
+        </div>
+        <h3 style="font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:6px;">No Active Journey</h3>
+        <p style="font-size:13px; color:var(--text-secondary); line-height:1.45; margin-bottom:20px;">
+          Plan your destination and expected travel time on the Home screen to begin real-time protection.
+        </p>
+        <button class="btn-primary-action" onclick="switchTab(0)">
+          <span class="material-symbols-rounded">add_road</span>
+          Plan a Journey
+        </button>
+      </div>
+
+      <!-- Active Journey View -->
+      <div id="journeyActiveState" style="display:none; flex-direction:column; gap:16px;">
+        <!-- Countdown Card -->
+        <div class="countdown-card">
+          <div class="countdown-title">Time Remaining</div>
+          <div class="countdown-value" id="countdownDigits">20:00</div>
+          <div class="countdown-arrival-pill">
+            <span class="material-symbols-rounded" style="font-size:14px; color:var(--primary);">schedule</span>
+            <span id="expectedArrivalText">Check-in at: 11:05 AM</span>
+          </div>
+        </div>
+
+        <!-- Route & Timeline Card -->
+        <div class="clean-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h3 style="font-size:14px; font-weight:700; color:var(--text-main);">Journey Route</h3>
+            <span style="font-size:11px; font-weight:700; color:var(--safe); background:var(--safe-light); padding:2px 8px; border-radius:var(--radius-pill);">Tracking Active</span>
+          </div>
+
+          <div class="timeline-wrap">
+            <div class="timeline-node">
+              <div class="node-icon-box src">
+                <span class="material-symbols-rounded" style="font-size:15px;">trip_origin</span>
+              </div>
+              <div class="node-info">
+                <h4>Starting Location</h4>
+                <p id="activeSourceText">Campus Library, North Gate</p>
+              </div>
+            </div>
+            <div class="node-connector"></div>
+            <div class="timeline-node">
+              <div class="node-icon-box dest">
+                <span class="material-symbols-rounded" style="font-size:15px;">location_on</span>
+              </div>
+              <div class="node-info">
+                <h4>Destination</h4>
+                <p id="activeDestText">Greenwood Apartments, Block B</p>
+              </div>
+            </div>
+          </div>
+
+          <hr style="border:none; border-top:1px solid var(--border); margin:12px 0;">
+
+          <div style="display:flex; justify-content:space-between; font-size:11.5px;">
+            <div>
+              <span style="color:var(--text-secondary);">Started at:</span>
+              <b style="display:block; color:var(--text-main); font-size:13px;" id="activeStartTime">10:45 AM</b>
+            </div>
+            <div>
+              <span style="color:var(--text-secondary);">Duration:</span>
+              <b style="display:block; color:var(--text-main); font-size:13px;" id="activeDuration">20 min</b>
+            </div>
+            <div>
+              <span style="color:var(--text-secondary);">Expected:</span>
+              <b style="display:block; color:var(--text-main); font-size:13px;" id="activeExpected">11:05 AM</b>
+            </div>
+          </div>
+        </div>
+
+        <!-- End Journey Safe Button -->
+        <button class="btn-outline-action" onclick="openEndJourneyConfirm()">
+          <span class="material-symbols-rounded" style="color:var(--safe); font-size:18px;">check_circle</span>
+          I'm Safe — End Journey
+        </button>
+
+        <!-- SOS Button -->
+        <button class="btn-sos" onclick="triggerSOSAlert(true)">
+          <span class="material-symbols-rounded">emergency</span>
+          SOS — Emergency Alert
+        </button>
+
+        <!-- Test Check-in Prompt -->
+        <div style="text-align:center;">
+          <button style="background:none; border:none; color:var(--primary); font-size:12px; font-weight:600; cursor:pointer;" onclick="triggerCheckInPrompt(1)">
+            Test Safety Check-In Prompt
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 3: Trusted Contacts -->
+    <div class="screen-content" id="tabContacts">
+      <!-- Status Notice -->
+      <div style="padding:12px 14px; background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-md); display:flex; align-items:center; gap:10px;">
+        <span class="material-symbols-rounded" style="color:var(--primary); font-size:20px;">shield</span>
+        <div>
+          <h4 style="font-size:12.5px; font-weight:700; color:var(--text-main);" id="guardianStatusTitle">2 Guardians Alert-Ready</h4>
+          <p style="font-size:11px; color:var(--text-secondary); line-height:1.3;">Selected contacts receive your coordinates if a check-in is missed.</p>
+        </div>
+      </div>
+
+      <!-- Contacts List -->
+      <div id="contactsListContainer">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <button class="btn-outline-action" onclick="openAddContactDialog()">
+        <span class="material-symbols-rounded" style="font-size:18px;">person_add</span>
+        Add Trusted Contact
+      </button>
+    </div>
+
+    <!-- Screen 4: Settings -->
+    <div class="screen-content" id="tabSettings">
+      <!-- User Profile Card -->
+      <div class="clean-card" style="padding:16px; display:flex; align-items:center; gap:12px;">
+        <div style="width:48px; height:48px; border-radius:50%; background:var(--primary-light); color:var(--primary); font-size:20px; font-weight:700; display:flex; align-items:center; justify-content:center;" id="profileAvatarLetter">
+          T
+        </div>
+        <div style="flex:1;">
+          <h3 style="font-size:15px; font-weight:700; color:var(--text-main);" id="profileNameDisplay">Tushar</h3>
+          <p style="font-size:11.5px; color:var(--text-secondary);" id="profileNoteDisplay">Blood Group O+</p>
+        </div>
+        <button style="background:none; border:none; color:var(--primary); cursor:pointer;" onclick="openEditProfileDialog()">
+          <span class="material-symbols-rounded">edit</span>
+        </button>
+      </div>
+
+      <!-- Preferences -->
+      <div style="font-size:11px; font-weight:700; color:var(--text-secondary); letter-spacing:0.5px; margin-top:8px;">JOURNEY PREFERENCES</div>
+
+      <div class="clean-card" style="padding:12px 16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h4 style="font-size:13.5px; font-weight:600; color:var(--text-main);">Default Journey Duration</h4>
+            <p style="font-size:11.5px; color:var(--text-secondary);">Preferred transit window</p>
+          </div>
+          <select id="selDefaultDuration" style="padding:6px 10px; border-radius:var(--radius-sm); border:1px solid var(--border); font-size:12.5px;" onchange="updateDefaultDuration(this.value)">
+            <option value="15">15 min</option>
+            <option value="20" selected>20 min</option>
+            <option value="30">30 min</option>
+            <option value="45">45 min</option>
+          </select>
+        </div>
+        <hr style="border:none; border-top:1px solid var(--border); margin:12px 0;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h4 style="font-size:13.5px; font-weight:600; color:var(--text-main);">Check-In Interval</h4>
+            <p style="font-size:11.5px; color:var(--text-secondary);">Between unanswered prompts</p>
+          </div>
+          <select id="selInterval" style="padding:6px 10px; border-radius:var(--radius-sm); border:1px solid var(--border); font-size:12.5px;" onchange="updateReminderInterval(this.value)">
+            <option value="10">10s (Demo)</option>
+            <option value="30" selected>30s</option>
+            <option value="60">1 min</option>
+            <option value="120">2 min</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Device Permissions (Real & Transparent) -->
+      <div style="font-size:11px; font-weight:700; color:var(--text-secondary); letter-spacing:0.5px; margin-top:8px;">DEVICE PERMISSIONS</div>
+
+      <div class="clean-card" style="padding:14px 16px; display:flex; flex-direction:column; gap:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h4 style="font-size:13px; font-weight:600; color:var(--text-main);">Location Services</h4>
+            <p style="font-size:11px; color:var(--text-secondary);">Simulation Mode (Starter)</p>
+          </div>
+          <span style="font-size:10.5px; font-weight:700; color:var(--text-secondary); background:var(--card-bg); padding:2px 8px; border-radius:6px; border:1px solid var(--border);">Simulated</span>
+        </div>
+        <hr style="border:none; border-top:1px solid var(--border); margin:0;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h4 style="font-size:13px; font-weight:600; color:var(--text-main);">Push Notifications</h4>
+            <p style="font-size:11px; color:var(--text-secondary);">In-App Modals Active</p>
+          </div>
+          <span style="font-size:10.5px; font-weight:700; color:var(--safe); background:var(--safe-light); padding:2px 8px; border-radius:6px;">Active</span>
+        </div>
+      </div>
+
+      <!-- General Links -->
+      <div class="clean-card" style="padding:0; overflow:hidden;">
+        <div style="padding:14px 16px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;" onclick="openPrivacyPolicy()">
+          <span style="font-size:13.5px; font-weight:600; color:var(--text-main);">Privacy & Safety Policy</span>
+          <span class="material-symbols-rounded" style="color:var(--text-secondary); font-size:18px;">chevron_right</span>
+        </div>
+        <hr style="border:none; border-top:1px solid var(--border); margin:0;">
+        <div style="padding:14px 16px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;" onclick="openAboutDialog()">
+          <span style="font-size:13.5px; font-weight:600; color:var(--text-main);">About Safe Journey</span>
+          <span class="material-symbols-rounded" style="color:var(--text-secondary); font-size:18px;">chevron_right</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4-Tab Bottom Navigation Bar -->
+    <div class="bottom-nav">
+      <div class="nav-item active" id="navHome" onclick="switchTab(0)">
+        <span class="material-symbols-rounded">home</span>
+        <span>Home</span>
+      </div>
+      <div class="nav-item" id="navJourney" onclick="switchTab(1)">
+        <span class="material-symbols-rounded">navigation</span>
+        <span>My Journey</span>
+        <div class="active-badge-dot" id="navActiveDot" style="display:none;"></div>
+      </div>
+      <div class="nav-item" id="navContacts" onclick="switchTab(2)">
+        <span class="material-symbols-rounded">people</span>
+        <span>Trusted Contacts</span>
+      </div>
+      <div class="nav-item" id="navSettings" onclick="switchTab(3)">
+        <span class="material-symbols-rounded">settings</span>
+        <span>Settings</span>
+      </div>
+    </div>
+
+    <!-- Modal: Safety Check-in ("Are you safe?") -->
+    <div class="modal-overlay" id="checkInModal">
+      <div class="modal-card">
+        <div class="dialog-icon-box brand">
+          <span class="material-symbols-rounded" style="font-size:30px;">shield</span>
+        </div>
+        <h3 style="font-size:20px; font-weight:800; color:var(--text-main); margin-bottom:6px;">Are you safe?</h3>
+        <p style="font-size:13px; color:var(--text-secondary); line-height:1.4; margin-bottom:20px;" id="checkInModalSubtitle">
+          Check-in attempt 1 of 3. Please confirm your status to prevent alerting your guardians.
+        </p>
+
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <button class="btn-green-safe" onclick="confirmCheckInSafe()">
+            <span class="material-symbols-rounded">check_circle</span>
+            Yes, I'm safe
+          </button>
+          <button class="btn-red-help" onclick="confirmCheckInHelp()">
+            <span class="material-symbols-rounded">warning</span>
+            I need help
+          </button>
+          <button style="background:none; border:none; color:var(--text-secondary); font-size:12px; cursor:pointer; padding:6px;" onclick="simulateCheckInTimeout()">
+            Simulate no response
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Escalation Alert Preview -->
+    <div class="modal-overlay" id="escalationModal">
+      <div class="modal-card" style="text-align:left;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <div class="dialog-icon-box danger" style="margin:0; width:40px; height:40px;">
+            <span class="material-symbols-rounded" style="font-size:22px;">emergency</span>
+          </div>
+          <h3 style="font-size:17px; font-weight:800; color:var(--sos);" id="escalationModalTitle">Emergency SOS Alert</h3>
+        </div>
+
+        <p style="font-size:12.5px; color:var(--text-secondary); line-height:1.45; margin-bottom:14px;" id="escalationModalDesc">
+          In production, this immediately broadcasts high-priority emergency notifications and SMS with live GPS.
+        </p>
+
+        <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px; font-size:12px; margin-bottom:14px; line-height:1.5;">
+          <b>Telemetry Payload:</b><br>
+          • Route: <span id="escRoute">Campus ➔ Home</span><br>
+          • GPS: 28.6139° N, 77.2090° E (Delhi NCR)<br>
+          • Battery: 74% • Status: Emergency Broadcast
+        </div>
+
+        <div style="font-size:12px; font-weight:700; margin-bottom:6px;">Guardians Alerted:</div>
+        <div id="escalationRecipientsList" style="margin-bottom:16px; font-size:12px; color:var(--text-secondary);">
+          <!-- Injected via JS -->
+        </div>
+
+        <button class="btn-primary-action" onclick="closeEscalationModal()">Close Preview</button>
+      </div>
+    </div>
+
+    <!-- Modal: End Journey Confirmation -->
+    <div class="modal-overlay" id="endConfirmModal">
+      <div class="modal-card">
+        <h3 style="font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:8px;">End this journey?</h3>
+        <p style="font-size:13px; color:var(--text-secondary); line-height:1.4; margin-bottom:20px;">
+          Confirming will end active safety tracking and mark your journey as safely completed.
+        </p>
+        <div style="display:flex; gap:10px;">
+          <button class="btn-outline-action" style="flex:1;" onclick="closeEndConfirmModal()">Keep Active</button>
+          <button class="btn-green-safe" style="flex:1;" onclick="confirmEndJourneySafe()">Yes, I'm Safe</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Custom Duration -->
+    <div class="modal-overlay" id="customDurationModal">
+      <div class="modal-card">
+        <h3 style="font-size:17px; font-weight:700; margin-bottom:6px;">Custom Arrival Time</h3>
+        <p style="font-size:12px; color:var(--text-secondary); margin-bottom:16px;">Select expected arrival duration between 5 and 180 minutes.</p>
+        <div style="font-size:36px; font-weight:800; color:var(--primary); margin-bottom:8px;" id="customDurationLabel">45 min</div>
+        <input type="range" min="5" max="180" value="45" style="width:100%; accent-color:var(--primary); margin-bottom:20px;" oninput="onCustomDurationSlider(this.value)">
+        <div style="display:flex; gap:10px;">
+          <button class="btn-outline-action" style="flex:1;" onclick="closeCustomDurationModal()">Cancel</button>
+          <button class="btn-primary-action" style="flex:1;" onclick="applyCustomDuration()">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Add/Edit Contact -->
+    <div class="modal-overlay" id="contactModal">
+      <div class="modal-card" style="text-align:left;">
+        <h3 style="font-size:17px; font-weight:700; margin-bottom:14px;" id="contactModalTitle">Add Trusted Contact</h3>
+        <div class="field-group">
+          <label class="field-label">Name</label>
+          <input type="text" id="contactNameInput" class="text-input" style="padding-left:14px;" placeholder="e.g. Sister, Mom, Sarah">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Phone Number</label>
+          <input type="tel" id="contactPhoneInput" class="text-input" style="padding-left:14px;" placeholder="+91 9876543210">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Relationship</label>
+          <select id="contactRelInput" style="width:100%; padding:10px; border:1px solid var(--border); border-radius:var(--radius-md); font-size:13.5px; background:#fff;">
+            <option value="Family">Family</option>
+            <option value="Friend">Friend</option>
+            <option value="Colleague">Colleague</option>
+            <option value="Guardian">Guardian</option>
+          </select>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin:14px 0 20px 0;">
+          <label class="switch-wrap">
+            <input type="checkbox" id="contactAlertInput" checked>
+            <span class="switch-slider"></span>
+          </label>
+          <span style="font-size:12px; color:var(--text-main);">Receive safety escalations & SMS</span>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn-outline-action" style="flex:1;" onclick="closeContactModal()">Cancel</button>
+          <button class="btn-primary-action" style="flex:1;" onclick="saveContact()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-pill" id="appToast">
+      <span class="material-symbols-rounded" style="color:var(--safe); font-size:18px;">check_circle</span>
+      <span id="toastMessage">Journey started.</span>
+    </div>
+  </div>
+
+  <script>
+    // App State matching Flutter models
+    const appState = {
+      journey: {
+        source: 'Campus Library, North Gate',
+        destination: 'Greenwood Apartments, Block B',
+        durationMinutes: 20,
+        startTime: null,
+        expectedArrival: null,
+        remainingSeconds: 0,
+        isActive: false,
+        checkInAttempts: 0,
+        isEscalated: false
+      },
+      contacts: [
+        { id: '1', name: 'Mom', phone: '+91 9812345678', relationship: 'Family', isAlertEnabled: true },
+        { id: '2', name: 'Best friend (Sarah)', phone: '+91 9898765432', relationship: 'Friend', isAlertEnabled: true }
+      ],
+      user: {
+        name: 'Tushar',
+        note: 'Blood Group O+'
+      },
+      settings: {
+        defaultDuration: 20,
+        reminderInterval: 30
+      },
+      timerRef: null,
+      customTempDuration: 45,
+      editingContactId: null
+    };
+
+    function showToast(msg) {
+      const toast = document.getElementById('appToast');
+      document.getElementById('toastMessage').textContent = msg;
+      toast.classList.add('active');
+      setTimeout(() => toast.classList.remove('active'), 3000);
+    }
+
+    function switchTab(index) {
+      const tabs = ['tabHome', 'tabJourney', 'tabContacts', 'tabSettings'];
+      const navIds = ['navHome', 'navJourney', 'navContacts', 'navSettings'];
+      const titles = [
+        ['Safe Journey', 'Your safety, every journey.'],
+        ['My Journey', 'Active tracking & route.'],
+        ['Trusted Contacts', 'Manage safety circle.'],
+        ['Settings', 'Preferences & permissions.']
+      ];
+
+      tabs.forEach((id, i) => {
+        document.getElementById(id).classList.toggle('active', i === index);
+        document.getElementById(navIds[i]).classList.toggle('active', i === index);
+      });
+
+      document.getElementById('screenHeaderTitle').textContent = titles[index][0];
+      document.getElementById('screenHeaderSubtitle').textContent = titles[index][1];
+
+      if (index === 1) renderActiveJourneyView();
+      if (index === 2) renderContactsList();
+    }
+
+    // Home Screen Actions
+    function useCurrentLocation() {
+      const src = 'Current Location (GPS: 28.6139° N, 77.2090° E)';
+      document.getElementById('sourceInput').value = src;
+      appState.journey.source = src;
+      showToast('Source set to current GPS coordinates.');
+    }
+
+    function swapLocations() {
+      const srcEl = document.getElementById('sourceInput');
+      const destEl = document.getElementById('destInput');
+      const temp = srcEl.value;
+      srcEl.value = destEl.value;
+      destEl.value = temp;
+      appState.journey.source = srcEl.value;
+      appState.journey.destination = destEl.value;
+    }
+
+    function setDestination(place) {
+      document.getElementById('destInput').value = place;
+      appState.journey.destination = place;
+    }
+
+    function selectDuration(mins, btn) {
+      appState.journey.durationMinutes = mins;
+      document.querySelectorAll('.duration-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('btnCustomDuration').textContent = 'Custom';
+    }
+
+    function openCustomDurationDialog() {
+      document.getElementById('customDurationModal').classList.add('active');
+    }
+
+    function closeCustomDurationModal() {
+      document.getElementById('customDurationModal').classList.remove('active');
+    }
+
+    function onCustomDurationSlider(val) {
+      appState.customTempDuration = parseInt(val, 10);
+      document.getElementById('customDurationLabel').textContent = `${val} min`;
+    }
+
+    function applyCustomDuration() {
+      appState.journey.durationMinutes = appState.customTempDuration;
+      document.querySelectorAll('.duration-btn').forEach(b => b.classList.remove('active'));
+      const customBtn = document.getElementById('btnCustomDuration');
+      customBtn.classList.add('active');
+      customBtn.textContent = `${appState.journey.durationMinutes}m`;
+      closeCustomDurationModal();
+    }
+
+    function formatTime12(date) {
+      let h = date.getHours();
+      const m = date.getMinutes().toString().padStart(2, '0');
+      const period = h >= 12 ? 'PM' : 'AM';
+      h = h % 12 || 12;
+      return `${h}:${m} ${period}`;
+    }
+
+    function startJourneyFromHome() {
+      const src = document.getElementById('sourceInput').value.trim();
+      const dest = document.getElementById('destInput').value.trim();
+      if (!src || !dest) {
+        alert('Please enter both starting location and destination.');
+        return;
+      }
+
+      appState.journey.source = src;
+      appState.journey.destination = dest;
+      appState.journey.isActive = true;
+      appState.journey.isEscalated = false;
+      appState.journey.checkInAttempts = 0;
+      appState.journey.startTime = new Date();
+      appState.journey.expectedArrival = new Date(appState.journey.startTime.getTime() + appState.journey.durationMinutes * 60000);
+      appState.journey.remainingSeconds = appState.journey.durationMinutes * 60;
+
+      document.getElementById('homeActiveNotice').style.display = 'flex';
+      document.getElementById('navActiveDot').style.display = 'block';
+
+      if (appState.timerRef) clearInterval(appState.timerRef);
+      appState.timerRef = setInterval(() => {
+        appState.journey.remainingSeconds--;
+        updateCountdownUI();
+        if (appState.journey.remainingSeconds <= 0) {
+          clearInterval(appState.timerRef);
+          triggerCheckInPrompt(1);
+        }
+      }, 1000);
+
+      showToast(`Journey started to ${dest}.`);
+      switchTab(1);
+    }
+
+    function updateCountdownUI() {
+      const s = Math.max(0, appState.journey.remainingSeconds);
+      const m = Math.floor(s / 60).toString().padStart(2, '0');
+      const remS = (s % 60).toString().padStart(2, '0');
+      const el = document.getElementById('countdownDigits');
+      if (el) el.textContent = `${m}:${remS}`;
+    }
+
+    function renderActiveJourneyView() {
+      const emptyState = document.getElementById('journeyEmptyState');
+      const activeState = document.getElementById('journeyActiveState');
+      if (!appState.journey.isActive) {
+        emptyState.style.display = 'block';
+        activeState.style.display = 'none';
+      } else {
+        emptyState.style.display = 'none';
+        activeState.style.display = 'flex';
+        document.getElementById('activeSourceText').textContent = appState.journey.source;
+        document.getElementById('activeDestText').textContent = appState.journey.destination;
+        document.getElementById('activeStartTime').textContent = formatTime12(appState.journey.startTime);
+        document.getElementById('activeDuration').textContent = `${appState.journey.durationMinutes} min`;
+        document.getElementById('activeExpected').textContent = formatTime12(appState.journey.expectedArrival);
+        document.getElementById('expectedArrivalText').textContent = `Check-in at: ${formatTime12(appState.journey.expectedArrival)}`;
+        updateCountdownUI();
+      }
+    }
+
+    function openEndJourneyConfirm() {
+      document.getElementById('endConfirmModal').classList.add('active');
+    }
+
+    function closeEndConfirmModal() {
+      document.getElementById('endConfirmModal').classList.remove('active');
+    }
+
+    function confirmEndJourneySafe() {
+      closeEndConfirmModal();
+      if (appState.timerRef) clearInterval(appState.timerRef);
+      appState.journey.isActive = false;
+      document.getElementById('homeActiveNotice').style.display = 'none';
+      document.getElementById('navActiveDot').style.display = 'none';
+      renderActiveJourneyView();
+      showToast('Journey marked safe.');
+    }
+
+    // Check-in and SOS
+    function triggerCheckInPrompt(attempt = 1) {
+      if (appState.journey.isEscalated) return;
+      appState.journey.checkInAttempts = attempt;
+      document.getElementById('checkInModalSubtitle').textContent = `Check-in attempt ${attempt} of 3. Please confirm your status to prevent alerting your guardians.`;
+      document.getElementById('checkInModal').classList.add('active');
+    }
+
+    function confirmCheckInSafe() {
+      document.getElementById('checkInModal').classList.remove('active');
+      confirmEndJourneySafe();
+    }
+
+    function confirmCheckInHelp() {
+      document.getElementById('checkInModal').classList.remove('active');
+      triggerSOSAlert(true);
+    }
+
+    function simulateCheckInTimeout() {
+      document.getElementById('checkInModal').classList.remove('active');
+      if (appState.journey.checkInAttempts < 3) {
+        showToast(`No response. Retrying check-in in ${appState.settings.reminderInterval}s...`);
+        setTimeout(() => {
+          if (appState.journey.isActive && !appState.journey.isEscalated) {
+            triggerCheckInPrompt(appState.journey.checkInAttempts + 1);
+          }
+        }, 2000); // 2s simulated wait for instant demonstration
+      } else {
+        triggerSOSAlert(false);
+      }
+    }
+
+    function triggerSOSAlert(isManual = false) {
+      appState.journey.isEscalated = true;
+      document.getElementById('escalationModalTitle').textContent = isManual ? 'Emergency SOS Alert' : 'Check-In Missed — Alert Sent';
+      document.getElementById('escalationModalDesc').textContent = isManual
+        ? 'Manual SOS panic triggered. In production, this immediately broadcasts high-priority emergency notifications and SMS with live GPS.'
+        : 'The user did not respond across 3 consecutive check-ins. Automated escalation has been triggered.';
+      document.getElementById('escRoute').textContent = `${appState.journey.source} ➔ ${appState.journey.destination}`;
+
+      const recipientsList = document.getElementById('escalationRecipientsList');
+      recipientsList.innerHTML = '';
+      const alerted = appState.contacts.filter(c => c.isAlertEnabled);
+      alerted.forEach(c => {
+        const d = document.createElement('div');
+        d.style.marginBottom = '4px';
+        d.innerHTML = `✓ <b>${c.name}</b> (${c.phone})`;
+        recipientsList.appendChild(d);
+      });
+
+      document.getElementById('escalationModal').classList.add('active');
+    }
+
+    function closeEscalationModal() {
+      document.getElementById('escalationModal').classList.remove('active');
+    }
+
+    // Contacts CRUD
+    function renderContactsList() {
+      const container = document.getElementById('contactsListContainer');
+      container.innerHTML = '';
+      const activeCount = appState.contacts.filter(c => c.isAlertEnabled).length;
+      document.getElementById('guardianStatusTitle').textContent = `${activeCount} of ${appState.contacts.length} Guardians Alert-Ready`;
+
+      appState.contacts.forEach((c) => {
+        const item = document.createElement('div');
+        item.className = 'contact-item-card';
+        item.innerHTML = `
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="contact-avatar">${c.name.charAt(0).toUpperCase()}</div>
+            <div>
+              <div style="display:flex; align-items:center;">
+                <span style="font-size:14px; font-weight:700; color:var(--text-main);">${c.name}</span>
+                <span class="contact-tag">${c.relationship}</span>
+              </div>
+              <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">${c.phone}</div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <label class="switch-wrap" title="Toggle emergency alerts">
+              <input type="checkbox" ${c.isAlertEnabled ? 'checked' : ''} onchange="toggleContactAlert('${c.id}', this.checked)">
+              <span class="switch-slider"></span>
+            </label>
+            <button style="background:none; border:none; color:var(--primary); cursor:pointer;" title="Simulate SMS Alert" onclick="simulateTestSMS('${c.name}', '${c.phone}')">
+              <span class="material-symbols-rounded" style="font-size:18px;">send</span>
+            </button>
+            <button style="background:none; border:none; color:var(--sos); cursor:pointer;" title="Delete" onclick="deleteContact('${c.id}')">
+              <span class="material-symbols-rounded" style="font-size:18px;">delete</span>
+            </button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function toggleContactAlert(id, val) {
+      const c = appState.contacts.find(x => x.id === id);
+      if (c) c.isAlertEnabled = val;
+      renderContactsList();
+    }
+
+    function openAddContactDialog() {
+      document.getElementById('contactModalTitle').textContent = 'Add Trusted Contact';
+      document.getElementById('contactNameInput').value = '';
+      document.getElementById('contactPhoneInput').value = '';
+      document.getElementById('contactRelInput').value = 'Family';
+      document.getElementById('contactAlertInput').checked = true;
+      appState.editingContactId = null;
+      document.getElementById('contactModal').classList.add('active');
+    }
+
+    function closeContactModal() {
+      document.getElementById('contactModal').classList.remove('active');
+    }
+
+    function saveContact() {
+      const name = document.getElementById('contactNameInput').value.trim();
+      const phone = document.getElementById('contactPhoneInput').value.trim();
+      const rel = document.getElementById('contactRelInput').value;
+      const alertEnabled = document.getElementById('contactAlertInput').checked;
+
+      if (!name || !phone) {
+        alert('Please enter both name and phone number');
+        return;
+      }
+
+      appState.contacts.push({
+        id: Date.now().toString(),
+        name,
+        phone,
+        relationship: rel,
+        isAlertEnabled: alertEnabled
+      });
+
+      closeContactModal();
+      renderContactsList();
+      showToast(`Added ${name} to trusted contacts.`);
+    }
+
+    function deleteContact(id) {
+      if (confirm('Remove this guardian from emergency alerts?')) {
+        appState.contacts = appState.contacts.filter(c => c.id !== id);
+        renderContactsList();
+        showToast('Contact removed.');
+      }
+    }
+
+    function simulateTestSMS(name, phone) {
+      alert(`SIMULATED SMS to ${name} (${phone}):\n\n"Safe Journey Test Alert for ${appState.user.name}. Location: ${appState.journey.source}. Timestamp: ${new Date().toLocaleTimeString()}."\n\n(No actual charges incurred)`);
+    }
+
+    // Settings & Dialogs
+    function openEditProfileDialog() {
+      const name = prompt('Enter your name:', appState.user.name);
+      if (name) {
+        appState.user.name = name.trim();
+        document.getElementById('profileNameDisplay').textContent = appState.user.name;
+        document.getElementById('profileAvatarLetter').textContent = appState.user.name.charAt(0).toUpperCase();
+      }
+      const note = prompt('Enter emergency medical/safety note:', appState.user.note);
+      if (note !== null) {
+        appState.user.note = note.trim();
+        document.getElementById('profileNoteDisplay').textContent = appState.user.note || 'No emergency note added';
+      }
+    }
+
+    function updateDefaultDuration(val) {
+      appState.settings.defaultDuration = parseInt(val, 10);
+      showToast(`Default duration set to ${val}m`);
+    }
+
+    function updateReminderInterval(val) {
+      appState.settings.reminderInterval = parseInt(val, 10);
+      showToast(`Reminder interval set to ${val}s`);
+    }
+
+    function openPrivacyPolicy() {
+      alert('Safe Journey Privacy Policy:\n\n• Your locations and contacts are kept private in-memory during this session.\n• Emergency alerts only broadcast to your explicitly enabled trusted contacts.\n• No tracking data is ever shared with advertisers.');
+    }
+
+    function openAboutDialog() {
+      alert('Safe Journey v1.0.0\n\nA modern, minimal, white-themed women\'s safety mobile app designed for solo travel peace of mind.');
+    }
+
+    // Initialize
+    renderContactsList();
+  </script>
+</body>
+</html>
